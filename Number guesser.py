@@ -2,7 +2,7 @@
 import random
 import time
 
-#function for chang array of user's numbers
+#function for change array of user's numbers
 def ChangeArr(ChancesArr, UserNum, gl): #ChancesArr - array, UserNum - user's number, gl(greater or less) than desired number
     if gl == 0: #if less
         if ChancesArr[0] == "": #if there's nothing
