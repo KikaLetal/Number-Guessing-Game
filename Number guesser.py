@@ -1,7 +1,39 @@
 #game - Number guesser
 import random
-def UIrender():
-    pass
+import time
+
+def ChangeArr(ChancesArr, UserNum, gl):
+    if gl == 0:
+        if ChancesArr[0] == "":
+            ChancesArr[0] = UserNum
+            return ChancesArr
+        elif UserNum > ChancesArr[0]:
+            ChancesArr[0] = UserNum
+            return ChancesArr
+        else:
+            return ChancesArr
+
+
+    else:
+        if ChancesArr[2] == "":
+            ChancesArr[2] = UserNum
+            return ChancesArr
+        elif UserNum  < ChancesArr[2]:
+            ChancesArr[2] = UserNum
+            return ChancesArr
+        else:
+            return ChancesArr
+    
+
+def UIrender(ChancesArr):
+    print("-------"*3)
+
+    for i in range(3):
+        space = round((5-len(str(ChancesArr[i]))) / 2) 
+        print("|" + " "*space + f"{ChancesArr[i]}" + " "*(5-space-len(str(ChancesArr[i]))) + "|" , end="")
+
+    print(end="\n")
+    print("-------"*3)
 
 print("Hi, it's a Number guesser game\n"\
           "Try to guess my number!\n"\
@@ -37,21 +69,42 @@ def Main():
                 print("\nGreat, You choise Hard level! You have only 3 chances") 
                 chances: int = 3 
 
+        StartTime = time.time()
+        ChancesArr = [""]*(chances+1)
+        ChancesArr[1] = "?"
         print("Let's start the game!")
         for i in range(chances):
-            UserNum = int(input("\nEnter your guess: "))
+            nonerror = True
+            print("\n" + f"it's {chances - i} attempts left" + "\n")
+            UIrender(ChancesArr)
+            while (nonerror):
+                try:
+                    UserNum = int(input("\nEnter your guess: "))
+                    nonerror = False
+                except ValueError:
+                    print("Invalid number, Try again")
             if UserNum == number:
                 print("\nCongratulations! You won\n")
-                return attempts
+                return attempts, time.time() - StartTime
             elif UserNum > number:
                 print(f'No, my number is less than {UserNum}. Try again')
+                attempts += 1
+                ChancesArr = ChangeArr(ChancesArr, UserNum, 1)
+                UIrender(ChancesArr)
             else:
                 print(f'No, my number is greater than {UserNum}. Try again')
-        return 0
+                attempts += 1
+                ChancesArr = ChangeArr(ChancesArr, UserNum, 0)
+                UIrender(ChancesArr)
+        return 0, time.time() - StartTime
 
 while True:
     result = Main()
-    if result == 0:
-        print("\nYou lose, but it's just a game! Try again!\n")
+    WoL = result[0]
+    Alltime = result[1]
+    if WoL == 0:
+        print("\nYou lose, but it's just a game! Try again!")
+        print(f"It took {Alltime} seconds\n")
     else:
-        print(f"Good job you won with {result} attempts! Try again!" + "\n")
+        print(f"Good job you won with {WoL} attempts! Try again!")
+        print(f"It took {Alltime} seconds\n")
